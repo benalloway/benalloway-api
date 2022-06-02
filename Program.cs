@@ -1,36 +1,27 @@
-using Api.CosmosDB;
-using Api.Services;
-using Microsoft.Azure.Cosmos;
+using Api.Context;
+using Api.Models;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options => { options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore; });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Setup Cosmos DB
-builder.Services.AddSingleton<IItemCosmosService>(options =>
+builder.Services.AddSwaggerGen(c =>
 {
-    string uri = builder.Configuration.GetSection("AzureCosmosDbSettings")
-    .GetValue<string>("URI");
-    string primaryKey = builder.Configuration.GetSection("AzureCosmosDbSettings")
-    .GetValue<string>("PrimaryKey");
-    string dbName = builder.Configuration.GetSection("AzureCosmosDbSettings")
-    .GetValue<string>("DatabaseName");
-    string containerName = builder.Configuration.GetSection("AzureCosmosDbSettings")
-    .GetValue<string>("ContainerName");
-
-    var cosmosClient = new CosmosClient(
-        uri,
-        primaryKey
-    );
-
-    return new ItemCosmosService(cosmosClient, dbName, containerName);
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Todo Api",
+        Description = "Making todos fun again",
+        Version = "v1"
+    });
 });
 
+// Setup db context
+var connectionString = builder.Configuration.GetConnectionString("Todo") ?? "Data Source=Pizzas.db";
+builder.Services.AddSqlite<TodoDb>(connectionString);
 
 var app = builder.Build();
 
@@ -38,12 +29,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo API V1");
+    });
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// app.UseAuthorization();
 
 app.MapControllers();
 
