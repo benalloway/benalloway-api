@@ -1,6 +1,7 @@
 using Api.Context;
 using Api.Models.Context;
 using Api.Models.Payload;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -19,7 +20,7 @@ public class ItemsController : ControllerBase
     }
 
     // CREATE Items
-
+    [EnableCors]
     [HttpPost]
     public async Task<IActionResult> Post(Item item)
     {
@@ -44,7 +45,7 @@ public class ItemsController : ControllerBase
     }
 
     // GET ITEMS
-
+    [EnableCors]
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -53,6 +54,7 @@ public class ItemsController : ControllerBase
         return Ok(items);
     }
 
+    [EnableCors]
     [HttpGet("{id?}")]
     public async Task<IActionResult> Get(int? id)
     {
@@ -68,6 +70,7 @@ public class ItemsController : ControllerBase
     }
 
     // UPDATE ITEMS
+    [EnableCors]
     [HttpPut]
     public async Task<IActionResult> Put(Item item)
     {
@@ -94,6 +97,7 @@ public class ItemsController : ControllerBase
 
 
     // DELETE ITEM(s)
+    [EnableCors]
     [HttpDelete]
     public async Task<IActionResult> Delete(DeletePayload request)
     {
@@ -123,6 +127,8 @@ public class ItemsController : ControllerBase
         payload.Add("Unable to find items", couldNotFindIds);
         return Ok(payload);
     }
+
+    [EnableCors]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
