@@ -6,6 +6,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// Cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("BasicPolicy",
+        policy =>
+        {
+            policy.WithOrigins("*")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+        });
+});
+
+
 builder.Services.AddControllers().AddNewtonsoftJson(options => { options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore; });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -40,5 +53,7 @@ if (app.Environment.IsDevelopment())
 // app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();

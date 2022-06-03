@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 namespace Api.Controllers;
 
 [ApiController]
+[EnableCors("BasicPolicy")]
 [Route("[controller]")]
 public class ItemsController : ControllerBase
 {
@@ -20,7 +21,7 @@ public class ItemsController : ControllerBase
     }
 
     // CREATE Items
-    [EnableCors]
+
     [HttpPost]
     public async Task<IActionResult> Post(Item item)
     {
@@ -45,7 +46,7 @@ public class ItemsController : ControllerBase
     }
 
     // GET ITEMS
-    [EnableCors]
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -54,7 +55,7 @@ public class ItemsController : ControllerBase
         return Ok(items);
     }
 
-    [EnableCors]
+
     [HttpGet("{id?}")]
     public async Task<IActionResult> Get(int? id)
     {
@@ -70,7 +71,7 @@ public class ItemsController : ControllerBase
     }
 
     // UPDATE ITEMS
-    [EnableCors]
+
     [HttpPut]
     public async Task<IActionResult> Put(Item item)
     {
@@ -97,7 +98,7 @@ public class ItemsController : ControllerBase
 
 
     // DELETE ITEM(s)
-    [EnableCors]
+
     [HttpDelete]
     public async Task<IActionResult> Delete(DeletePayload request)
     {
@@ -128,7 +129,7 @@ public class ItemsController : ControllerBase
         return Ok(payload);
     }
 
-    [EnableCors]
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
